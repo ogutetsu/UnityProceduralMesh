@@ -2,58 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter)), RequireComponent(typeof(MeshRenderer)) ]
-[ExecuteInEditMode]
-public class AllTheTriangles : MonoBehaviour
+public class AllTheTriangles : AbstractMeshGenerator
 {
 
-    [SerializeField] private Material material;
+    
     [SerializeField] private Vector3[] vs = new Vector3[3];
     [SerializeField] private bool reverseTriangle;
 
-    private List<Vector3> vertices;
-    private List<int> triangles;
 
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private Mesh mesh;
-
-    void Update()
+    protected override void SetMeshNums()
     {
-        meshFilter = GetComponent<MeshFilter>();
-        meshRenderer = GetComponent<MeshRenderer>();
-
-        meshRenderer.material = material;
-
-        vertices = new List<Vector3>();
-        triangles = new List<int>();
-
-        CreateMesh();
-
-    }
-
-    private void CreateMesh()
-    {
-        mesh = new Mesh();
-
-        SetVertices();
-        SetTriangles();
-
-        mesh.SetVertices(vertices);
-        mesh.SetTriangles(triangles, 0);
-
-        mesh.RecalculateNormals();
-
-        meshFilter.sharedMesh = mesh;
+        numVertices = 3;
+        numTriangles = 3;
     }
 
 
-    private void SetVertices()
+    protected override void SetVertices()
     {
         vertices.AddRange(vs);
     }
 
-    private void SetTriangles()
+    protected override void SetTriangles()
     {
         if (!reverseTriangle)
         {
@@ -67,6 +36,27 @@ public class AllTheTriangles : MonoBehaviour
             triangles.Add(2);
             triangles.Add(1);
         }
+    }
+
+
+    protected override void SetNormals()
+    {
+
+    }
+
+    protected override void SetTangents()
+    {
+
+    }
+
+    protected override void SetUVs()
+    {
+
+    }
+
+    protected override void SetVertexColors()
+    {
+
     }
 
 }
