@@ -9,6 +9,7 @@ public class AllTheTriangles : MonoBehaviour
 
     [SerializeField] private Material material;
     [SerializeField] private Vector3[] vs = new Vector3[3];
+    [SerializeField] private bool reverseTriangle;
 
     private List<Vector3> vertices;
     private List<int> triangles;
@@ -41,6 +42,8 @@ public class AllTheTriangles : MonoBehaviour
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
 
+        mesh.RecalculateNormals();
+
         meshFilter.sharedMesh = mesh;
     }
 
@@ -52,10 +55,18 @@ public class AllTheTriangles : MonoBehaviour
 
     private void SetTriangles()
     {
-        triangles.Add(0);
-        triangles.Add(1);
-        triangles.Add(2);
-
+        if (!reverseTriangle)
+        {
+            triangles.Add(0);
+            triangles.Add(1);
+            triangles.Add(2);
+        }
+        else
+        {
+            triangles.Add(0);
+            triangles.Add(2);
+            triangles.Add(1);
+        }
     }
 
 }
