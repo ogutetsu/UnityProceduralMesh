@@ -52,9 +52,9 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
         errorStr += vertices.Count == numVertices
             ? ""
             : "Should be " + numVertices + " vertices, but there are " + vertices.Count + ". ";
-        errorStr += vertices.Count == numTriangles
+        errorStr += triangles.Count == numTriangles
             ? ""
-            : "Should be " + numTriangles + " triangles, but there are " + vertices.Count + ". ";
+            : "Should be " + numTriangles + " triangles, but there are " + triangles.Count + ". ";
 
 
         errorStr += (normals.Count == numVertices || normals.Count == 0)
