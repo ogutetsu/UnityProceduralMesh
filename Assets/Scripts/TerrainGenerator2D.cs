@@ -19,6 +19,7 @@ public class TerrainGenerator2D : AbstractMeshGenerator
 
     [SerializeField] private int seed;
 
+    [SerializeField] private float uvScale = 1;
 
     protected override void SetMeshNums()
     {
@@ -71,6 +72,14 @@ public class TerrainGenerator2D : AbstractMeshGenerator
 
     protected override void SetUVs()
     {
+        Vector2[] uvArray = new Vector2[numVertices];
+        for (int i = 0; i < resolution; i++)
+        {
+            uvArray[i] = new Vector2(vertices[i].x/uvScale, vertices[i].y/ uvScale);
+            uvArray[i + resolution] = new Vector2(vertices[i].x, vertices[i + resolution].y);
+        }
+
+        uvs.AddRange(uvArray);
     }
 
     protected override void SetVertexColors()
