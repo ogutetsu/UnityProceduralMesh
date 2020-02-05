@@ -234,7 +234,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landscapePrefab: {fileID: 7688393913578899258, guid: d0cfc7d992acc8d4487e9caa35ea6a4a,
     type: 3}
-  material: {fileID: 2100000, guid: 69fdb237d7d0ccd42b074bf1d99f8786, type: 2}
+  material: {fileID: 2100000, guid: a81693a9dcbd52e48b20aa0adc36c08e, type: 2}
   xResolution: 50
   zResolution: 50
   meshScale: 25
