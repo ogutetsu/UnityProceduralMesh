@@ -18,6 +18,7 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     [SerializeField] private float angle = 0;
 
+
     protected override void SetMeshNums()
     {
         numVertices = numSides;
@@ -45,6 +46,11 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     protected override void SetNormals()
     {
+        Vector3 normal = new Vector3(0, 0, -1);
+        for (int i = 0; i < numVertices; i++)
+        {
+            normals.Add(normal);
+        }
     }
 
     protected override void SetTangents()
