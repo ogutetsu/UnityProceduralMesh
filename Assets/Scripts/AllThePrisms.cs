@@ -87,6 +87,32 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetNormals()
     {
+        Vector3 frontNormal = new Vector3(0,0,-1);
+        for(int i = 0; i < numSides; i++)
+        {
+            normals.Add(frontNormal);
+        }
+
+        for (int i = 0; i < numSides; i++)
+        {
+            int index = numSides + 4 * i;
+            Vector3 dirOne = vertices[index + 2] - vertices[index];
+            Vector3 dirTwo = vertices[index + 3] - vertices[index];
+
+            Vector3 normal = Vector3.Cross(dirTwo, dirOne).normalized;
+
+            for (int n = 0; n < 4; n++)
+            {
+                normals.Add(normal);
+            }
+
+        }
+
+        Vector3 backNormal = new Vector3(0, 0, -1);
+        for (int i = 0; i < numSides; i++)
+        {
+            normals.Add(backNormal);
+        }
     }
 
     protected override void SetTangents()
