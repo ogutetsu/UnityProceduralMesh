@@ -22,7 +22,7 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
     protected int numTriangles;
 
     private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
+    protected MeshRenderer meshRenderer;
     private MeshCollider meshCollider;
     private Mesh mesh;
 

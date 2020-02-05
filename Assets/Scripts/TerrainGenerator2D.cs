@@ -19,7 +19,12 @@ public class TerrainGenerator2D : AbstractMeshGenerator
 
     [SerializeField] private int seed;
 
+    [SerializeField] private bool uvFollowSurface;
     [SerializeField] private float uvScale = 1;
+    [SerializeField] private float numTexPerSquare = 1;
+
+    [SerializeField] private int sortingOrder = 0;
+
 
     protected override void SetMeshNums()
     {
@@ -64,19 +69,32 @@ public class TerrainGenerator2D : AbstractMeshGenerator
 
     protected override void SetNormals()
     {
+        SetGeneralNormals();
     }
 
     protected override void SetTangents()
     {
+        SetGeneralTangents();
     }
 
     protected override void SetUVs()
     {
+        meshRenderer.sortingOrder = sortingOrder;
+
         Vector2[] uvArray = new Vector2[numVertices];
         for (int i = 0; i < resolution; i++)
         {
-            uvArray[i] = new Vector2(vertices[i].x/uvScale, vertices[i].y/ uvScale);
-            uvArray[i + resolution] = new Vector2(vertices[i].x, vertices[i + resolution].y);
+            
+            if (uvFollowSurface)
+            {
+                uvArray[i] = new Vector2(i * numTexPerSquare / uvScale, 1);
+                uvArray[i + resolution] = new Vector2(i * numTexPerSquare / uvScale, 0);
+            }
+            else
+            {
+                uvArray[i] = new Vector2(vertices[i].x/uvScale, vertices[i].y/ uvScale);
+                uvArray[i + resolution] = new Vector2(vertices[i].x, vertices[i + resolution].y);
+            }
         }
 
         uvs.AddRange(uvArray);
