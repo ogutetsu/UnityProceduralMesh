@@ -120,6 +120,9 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetTangents()
     {
+        SetGeneralTangents();
+
+        /*
         Vector4 frontTangent = new Vector4(1,0,0,-1);
         for (int i = 0; i < numSides; i++)
         {
@@ -146,7 +149,7 @@ public class AllThePrisms : AbstractMeshGenerator
             tangents.Add(backTangent);
         }
 
-
+    */
     }
 
     protected override void SetUVs()

@@ -167,4 +167,68 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
 
     }
 
+
+    protected void SetGeneralTangents()
+    {
+        if (uvs.Count == 0 || normals.Count == 0)
+        {
+            print("Set UVs and Normals before adding tangents");
+            return;
+        }
+
+        int numGeometricTriangles = numTriangles / 3;
+        Vector3[] tans = new Vector3[numVertices];
+        Vector3[] bitans = new Vector3[numVertices];
+        int index = 0;
+        for (int i = 0; i < numGeometricTriangles; i++)
+        {
+            int triA = triangles[index];
+            int triB = triangles[index + 1];
+            int triC = triangles[index + 2];
+
+            Vector2 uvA = uvs[triA];
+            Vector2 uvB = uvs[triB];
+            Vector2 uvC = uvs[triC];
+
+            Vector3 dirA = vertices[triB] - vertices[triA];
+            Vector3 dirB = vertices[triC] - vertices[triA];
+
+            Vector2 uvDiffA = new Vector2(uvB.x - uvA.x, uvC.x - uvA.x);
+            Vector2 uvDiffB = new Vector2(uvB.y - uvA.y, uvC.y - uvA.y);
+
+            float determinant = 1f / (uvDiffA.x * uvDiffB.y - uvDiffA.y * uvDiffB.x);
+            Vector3 sDir = determinant * (new Vector3(uvDiffB.y * dirA.x - uvDiffB.x * dirB.x,
+                               uvDiffB.y * dirA.y - uvDiffB.x * dirB.y, uvDiffB.y * dirA.z - uvDiffB.x * dirB.z));
+            Vector3 tDir = determinant * (new Vector3(uvDiffA.x * dirB.x - uvDiffA.y * dirA.x,
+                               uvDiffA.x * dirB.y - uvDiffA.y * dirA.y, uvDiffA.x * dirB.z - uvDiffA.y * dirA.z));
+
+            tans[triA] += sDir;
+            tans[triB] += sDir;
+            tans[triC] += sDir;
+
+            bitans[triA] += tDir;
+            bitans[triB] += tDir;
+            bitans[triC] += tDir;
+
+            index += 3;
+
+        }
+
+
+        for (int i = 0; i < numVertices; i++)
+        {
+            Vector3 normal = normals[i];
+            Vector3 tan = tans[i];
+
+            Vector3 tangent3 = (tan - Vector3.Dot(normal, tan) * normal).normalized;
+            Vector4 tangent = tangent3;
+
+            tangent.w = Vector3.Dot(Vector3.Cross(normal, tan), bitans[i]) < 0f ? -1f : 1f;
+            tangents.Add(tangent);
+
+        }
+
+    }
+
+
 }
