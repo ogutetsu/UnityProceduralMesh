@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter)), RequireComponent(typeof(MeshRenderer)), RequireComponent(typeof(MeshCollider))]
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public abstract class AbstractMeshGenerator : MonoBehaviour
 {
     [SerializeField] protected Material material;
@@ -26,7 +26,8 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
     private MeshCollider meshCollider;
     private Mesh mesh;
 
-    void Update()
+    //void Update()
+    void Start()
     {
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
