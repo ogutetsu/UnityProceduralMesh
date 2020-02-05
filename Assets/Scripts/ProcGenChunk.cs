@@ -11,6 +11,18 @@ public class ProcGenChunk : AbstractIslandMeshGenerator
     [SerializeField] private int zEndPos;
 
 
+    private int zOuterStartPos;
+    private int zOuterEndPos;
+    private int xOuterStartPos;
+    private int xOuterEndPos;
+
+
+
+
+    private List<Vector3> outerVertices = new List<Vector3>();
+    private List<int> outerTriangles = new List<int>();
+
+
     public void InitInfiniteLandScape(Material mat, int xRes, int zRes, float meshScale, float yScale, int octaves,
         float lacunarity, float gain, float perlinScale, Vector2 startPosition)
     {
@@ -31,6 +43,12 @@ public class ProcGenChunk : AbstractIslandMeshGenerator
         zEndPos = zStartPos + zRes;
 
 
+        zOuterStartPos = zStartPos - 1;
+        zOuterEndPos = zEndPos + 1;
+        xOuterStartPos = xStartPos - 1;
+        xOuterEndPos = xEndPos + 1;
+
+
         type = FallOffType.None;
     }
 
@@ -42,22 +60,29 @@ public class ProcGenChunk : AbstractIslandMeshGenerator
 
     protected override void SetVertices()
     {
+
         float xx, y, zz = 0;
         Vector3[] vs = new Vector3[numVertices];
 
 
         NoiseGenerator noise = new NoiseGenerator(octaves, lacunarity, gain, perlinScale);
 
-        for (int z = zStartPos; z <= zEndPos; z++)
+        for (int z = zOuterStartPos; z <= zOuterEndPos; z++)
         {
-            for (int x = xStartPos; x <= xEndPos; x++)
+            for (int x = xOuterStartPos; x <= xOuterEndPos; x++)
             {
                 xx = ((float)x / xResolution) * meshScale;
                 zz = ((float)z / zResolution) * meshScale;
 
                 y = yScale * noise.GetFractalNoise(xx, zz);
                 y = FallOff((float)x, y, (float)z);
-                vertices.Add(new Vector3(xx, y, zz));
+                Vector3 vertex = new Vector3(xx, y, zz);
+                outerVertices.Add(vertex);
+
+                if (z >= zStartPos && z <= zEndPos && x >= xStartPos && x <= xEndPos)
+                {
+                    vertices.Add(vertex);
+                }
             }
 
         }
@@ -67,23 +92,41 @@ public class ProcGenChunk : AbstractIslandMeshGenerator
 
     protected override void SetTriangles()
     {
+        int outerTriCount = 0;
         int triCount = 0;
-        for (int z = zStartPos; z < zEndPos; z++)
+        for (int z = zOuterStartPos; z < zOuterEndPos; z++)
         {
-            for (int x = xStartPos; x < xEndPos; x++)
+            for (int x = xOuterStartPos; x < xOuterEndPos; x++)
             {
-                triangles.Add(triCount);
-                triangles.Add(triCount + xResolution + 1);
-                triangles.Add(triCount + 1);
+                outerTriangles.Add(outerTriCount);
+                outerTriangles.Add(outerTriCount + xResolution + 3);
+                outerTriangles.Add(outerTriCount + 1);
 
-                triangles.Add(triCount + 1);
-                triangles.Add(triCount + xResolution + 1);
-                triangles.Add(triCount + xResolution + 2);
+                outerTriangles.Add(outerTriCount + 1);
+                outerTriangles.Add(outerTriCount + xResolution + 3);
+                outerTriangles.Add(outerTriCount + xResolution + 4);
 
-                triCount++;
+                outerTriCount++;
+
+
+                if (z >= zStartPos && z < zEndPos && x >= xStartPos && x < xEndPos)
+                {
+                    triangles.Add(triCount);
+                    triangles.Add(triCount + xResolution + 1);
+                    triangles.Add(triCount + 1);
+
+                    triangles.Add(triCount + 1);
+                    triangles.Add(triCount + xResolution + 1);
+                    triangles.Add(triCount + xResolution + 2);
+
+                    triCount++;
+                }
             }
 
-            triCount++;
+            if (z >= zStartPos && z < zEndPos)
+            {
+                triCount++;
+            }
         }
 
 
@@ -91,7 +134,44 @@ public class ProcGenChunk : AbstractIslandMeshGenerator
 
     protected override void SetNormals()
     {
-        SetGeneralNormals();
+        int numGeometricTriangles = outerTriangles.Count / 3;
+        Vector3[] norms = new Vector3[outerVertices.Count];
+        int index = 0;
+        for (int i = 0; i < numGeometricTriangles; i++)
+        {
+            int triA = outerTriangles[index];
+            int triB = outerTriangles[index+1];
+            int triC = outerTriangles[index+2];
+
+            Vector3 dirA = outerVertices[triB] - outerVertices[triA];
+            Vector3 dirB = outerVertices[triC] - outerVertices[triA];
+
+            Vector3 normal = Vector3.Cross(dirA, dirB);
+
+            norms[triA] += normal;
+            norms[triB] += normal;
+            norms[triC] += normal;
+
+            index += 3;
+
+        }
+
+        int outerWidth = xResolution + 2;
+        for (int i = 0; i < outerVertices.Count; i++)
+        {
+            if (i % (outerWidth + 1) == 0 || i % (outerWidth + 1) == outerWidth)
+            {
+                continue;
+            }
+
+            if (i <= outerWidth || i >= outerVertices.Count - outerWidth)
+            {
+                continue;
+            }
+        }
+
+
+
     }
 
     protected override void SetTangents()
