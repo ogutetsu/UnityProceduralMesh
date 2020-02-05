@@ -10,18 +10,19 @@ public class ProceduralLandscapeGenerator : AbstractMeshGenerator
     [SerializeField] private float meshScale = 1;
     [SerializeField] private float yScale = 1;
 
-    [SerializeField] private float meshHeight = 1;
-
     [SerializeField, Range(1, 8)] private int octaves = 1;
     [SerializeField] private float lacunarity = 2;
     [SerializeField, Range(0, 1)] private float gain = 0.5f;
     [SerializeField] private float perlinScale = 1;
 
 
-    [SerializeField] private bool uvFollowSurface;
     [SerializeField] private float uvScale = 1;
-    [SerializeField] private float numTexPerSquare = 1;
-    private int i;
+
+    [SerializeField] private Gradient gradient;
+
+    [SerializeField] private float gradMin = -2;
+    [SerializeField] private float gradMax = 5;
+
 
     protected override void SetMeshNums()
     {
@@ -89,26 +90,23 @@ public class ProceduralLandscapeGenerator : AbstractMeshGenerator
     protected override void SetUVs()
     {
 
-        //Vector2[] uvArray = new Vector2[numVertices];
-        //for (int i = 0; i < resolution; i++)
-        //{
-
-        //    if (uvFollowSurface)
-        //    {
-        //        uvArray[i] = new Vector2(i * numTexPerSquare / uvScale, 1);
-        //        uvArray[i + resolution] = new Vector2(i * numTexPerSquare / uvScale, 0);
-        //    }
-        //    else
-        //    {
-        //        uvArray[i] = new Vector2(vertices[i].x / uvScale, vertices[i].y / uvScale);
-        //        uvArray[i + resolution] = new Vector2(vertices[i].x, vertices[i + resolution].y);
-        //    }
-        //}
-
-        //uvs.AddRange(uvArray);
+        for (int z = 0; z <= zResolution; z++)
+        {
+            for (int x = 0; x <= xResolution; x++)
+            {
+                uvs.Add(new Vector2(x / (uvScale * xResolution), z / (uvScale * zResolution)));
+            }
+        }
     }
 
     protected override void SetVertexColors()
     {
+        
+        float diff = gradMax - gradMin;
+        for (int i = 0; i < numVertices; i++)
+        {
+            vertexColors.Add(gradient.Evaluate((vertices[i].y - gradMin) /diff));
+        }
+
     }
 }
