@@ -101,8 +101,9 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
         SetTriangles();
 
         SetNormals();
-        SetTangents();
         SetUVs();
+        SetTangents();
+        
         SetVertexColors();
 
         if (ValidateMesh())
@@ -118,8 +119,8 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
             }
             
             mesh.SetNormals(normals);
-            mesh.SetTangents(tangents);
             mesh.SetUVs(0, uvs);
+            mesh.SetTangents(tangents);
             mesh.SetColors(vertexColors);
 
 
@@ -135,5 +136,35 @@ public abstract class AbstractMeshGenerator : MonoBehaviour
     protected abstract void SetUVs();
     protected abstract void SetVertexColors();
 
+    protected void SetGeneralNormals()
+    {
+        int numGeometricTriangles = numTriangles / 3;
+        Vector3[] norms = new Vector3[numVertices];
+        int index = 0;
+        for (int i = 0; i < numGeometricTriangles; i++)
+        {
+            int triA = triangles[index];
+            int triB = triangles[index+1];
+            int triC = triangles[index+2];
+
+            Vector3 dirA = vertices[triB] - vertices[triA];
+            Vector3 dirB = vertices[triC] - vertices[triA];
+
+            Vector3 normal = Vector3.Cross(dirA, dirB);
+
+            norms[triA] += normal;
+            norms[triB] += normal;
+            norms[triC] += normal;
+
+            index += 3;
+
+        }
+
+        for (int i = 0; i < numVertices; i++)
+        {
+            normals.Add(norms[i].normalized);
+        }
+
+    }
 
 }

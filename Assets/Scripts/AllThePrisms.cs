@@ -87,6 +87,8 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetNormals()
     {
+        SetGeneralNormals();
+        /*
         Vector3 frontNormal = new Vector3(0,0,-1);
         for(int i = 0; i < numSides; i++)
         {
@@ -113,6 +115,7 @@ public class AllThePrisms : AbstractMeshGenerator
         {
             normals.Add(backNormal);
         }
+        */
     }
 
     protected override void SetTangents()
