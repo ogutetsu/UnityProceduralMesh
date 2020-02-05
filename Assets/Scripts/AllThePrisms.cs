@@ -11,6 +11,8 @@ public class AllThePrisms : AbstractMeshGenerator
     [SerializeField] private float backRadius;
     [SerializeField] private float length;
 
+    [SerializeField] private Gradient gradient;
+
 
     protected override void SetMeshNums()
     {
@@ -95,6 +97,10 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetVertexColors()
     {
+        for (int i = 0; i < numVertices; i++)
+        {
+            vertexColors.Add(gradient.Evaluate((float)i/numVertices));
+        }
     }
 
 }
