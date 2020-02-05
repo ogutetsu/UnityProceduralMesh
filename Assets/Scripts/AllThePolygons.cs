@@ -10,6 +10,13 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     [SerializeField] private float radius;
 
+    [SerializeField] private float xTiling = 1;
+    [SerializeField] private float yTiling = 1;
+
+    [SerializeField] private float xScroll = 1;
+    [SerializeField] private float yScroll = 1;
+
+    [SerializeField] private float angle = 0;
 
     protected override void SetMeshNums()
     {
@@ -46,6 +53,14 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     protected override void SetUVs()
     {
+        for (int i = 0; i < numVertices; i++)
+        {
+            float uvX = xTiling * vertices[i].x + xScroll;
+            float uvY = yTiling * vertices[i].y + yScroll;
+            Vector2 uv = new Vector2(uvX, uvY);
+            uv = Quaternion.AngleAxis(angle, Vector3.forward) * uv;
+            uvs.Add(uv);
+        }
     }
 
     protected override void SetVertexColors()
