@@ -6,6 +6,7 @@ public class AllTheQuads : AbstractMeshGenerator
 {
 
     [SerializeField] private Vector3[] vs = new Vector3[4];
+    [SerializeField] private Vector2[] flexibleUVs = new Vector2[4];
 
     protected override void SetMeshNums()
     {
@@ -42,7 +43,7 @@ public class AllTheQuads : AbstractMeshGenerator
 
     protected override void SetUVs()
     {
-
+        uvs.AddRange(flexibleUVs);
     }
 
     protected override void SetVertexColors()

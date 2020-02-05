@@ -6,6 +6,8 @@ public class AllTheUniqueVertQuads : AbstractMeshGenerator
 {
 
     [SerializeField] private Vector3[] vs = new Vector3[4];
+    [SerializeField] private Vector2[] flexibleUVs = new Vector2[4];
+    [SerializeField] private Vector2[] flexibleUniqueUVs = new Vector2[6];
 
     protected override void SetMeshNums()
     {
@@ -48,7 +50,15 @@ public class AllTheUniqueVertQuads : AbstractMeshGenerator
 
     protected override void SetUVs()
     {
+        /*        uvs.Add(flexibleUVs[0]);
+        uvs.Add(flexibleUVs[1]);
+        uvs.Add(flexibleUVs[3]);
 
+        uvs.Add(flexibleUVs[0]);
+        uvs.Add(flexibleUVs[3]);
+        uvs.Add(flexibleUVs[2]);
+        */
+        uvs.AddRange(flexibleUniqueUVs);
     }
 
     protected override void SetVertexColors()
