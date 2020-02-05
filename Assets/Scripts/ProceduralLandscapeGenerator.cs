@@ -23,6 +23,9 @@ public class ProceduralLandscapeGenerator : AbstractMeshGenerator
     [SerializeField] private float gradMin = -2;
     [SerializeField] private float gradMax = 5;
 
+    [SerializeField] private FallOffType type;
+    [SerializeField] private float falloffSize;
+    [SerializeField] private float seaLevel;
 
     protected override void SetMeshNums()
     {
@@ -46,12 +49,52 @@ public class ProceduralLandscapeGenerator : AbstractMeshGenerator
                 zz = ((float)z / zResolution) * meshScale;
 
                 y = yScale * noise.GetFractalNoise(xx, zz);
-
+                y = FallOff((float) x, y, (float) z);
                 vertices.Add(new Vector3(xx, y, zz));
             }
             
         }
     }
+
+    private float FallOff(float x, float height, float z)
+    {
+        x = x - xResolution / 2f;
+        z = z - zResolution / 2f;
+
+        float falloff = 0;
+        switch (type)
+        {
+            case FallOffType.None:
+                return height;
+            case FallOffType.Circular:
+                falloff = Mathf.Sqrt(x * x + z * z) / falloffSize;
+                return GetHeight(falloff, height);
+            case FallOffType.RoundedSquare:
+                falloff = Mathf.Sqrt(x * x * x * x * z * z * z * z) / falloffSize;
+                return GetHeight(falloff, height);
+            default:
+                return height;
+
+        }
+
+    }
+
+    private float GetHeight(float falloff, float height)
+    {
+        if (falloff < 1)
+        {
+            falloff = falloff * falloff * (3 - 2 * falloff);
+            height = height - falloff * (height - seaLevel);
+        }
+        else
+        {
+            height = seaLevel;
+        }
+
+        return height;
+    }
+
+
 
     protected override void SetTriangles()
     {
