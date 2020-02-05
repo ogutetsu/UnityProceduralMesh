@@ -12,6 +12,13 @@ public class TerrainGenerator2D : AbstractMeshGenerator
 
     [SerializeField] private float meshHeight = 1;
 
+    [SerializeField, Range(1,8)] private int octaves = 1;
+    [SerializeField] private float lacunarity = 2;
+    [SerializeField, Range(0,1)] private float gain = 0.5f;
+    [SerializeField] private float perlinScale = 1;
+
+    [SerializeField] private int seed;
+
 
     protected override void SetMeshNums()
     {
@@ -24,10 +31,14 @@ public class TerrainGenerator2D : AbstractMeshGenerator
         float x, y = 0;
         Vector3[] vs = new Vector3[numVertices];
 
+        Random.InitState(seed);
+
+        NoiseGenerator noise = new NoiseGenerator(octaves, lacunarity, gain, perlinScale);
+
         for (int i = 0; i < resolution; i++)
         {
             x = ((float) i / resolution) * xScale;
-            y = yScale;
+            y = yScale * noise.GetFractalNoise(x, 0);
 
             vs[i] = new Vector3(x,y,0);
             vs[i+resolution] = new Vector3(x, y - meshHeight, 0);

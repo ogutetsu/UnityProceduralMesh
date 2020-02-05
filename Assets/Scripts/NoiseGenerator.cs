@@ -29,7 +29,7 @@ public class NoiseGenerator
         return (2 * Mathf.PerlinNoise(x, z) - 1);
     }
 
-    public float GetGractalNoise(float x, float z)
+    public float GetFractalNoise(float x, float z)
     {
         float fractalNoise = 0;
         float frequency = 1;
