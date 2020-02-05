@@ -13,6 +13,8 @@ public class AllThePrisms : AbstractMeshGenerator
 
     [SerializeField] private Gradient gradient;
 
+    private Vector3[] vs;
+
 
     protected override void SetMeshNums()
     {
@@ -22,7 +24,7 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetVertices()
     {
-        Vector3[] vs = new Vector3[2 * numSides];
+        vs = new Vector3[2 * numSides];
         for (int i = 0; i < numSides; i++)
         {
             float angle = 2 * (float) Mathf.PI * i / numSides;
@@ -93,6 +95,25 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetUVs()
     {
+        for (int i = 0; i < numSides; i++)
+        {
+            uvs.Add(vs[i]);
+        }
+
+        for (int i = 0; i < numSides; i++)
+        {
+            uvs.Add(new Vector2(frontRadius,0));
+            uvs.Add(new Vector2(0, length));
+            uvs.Add(new Vector2(0, 0));
+            uvs.Add(new Vector2(backRadius, length));
+        }
+
+
+        for (int i = 0; i < numSides; i++)
+        {
+            uvs.Add(vs[i + numSides]);
+        }
+
     }
 
     protected override void SetVertexColors()
