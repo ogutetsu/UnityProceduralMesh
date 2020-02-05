@@ -18,6 +18,7 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     [SerializeField] private float angle = 0;
 
+    //[SerializeField] private Vector4 tangent = new Vector4(1,0,0,-1);
 
     protected override void SetMeshNums()
     {
@@ -55,6 +56,14 @@ public class AllThePolygons : AllTheUniqueVertQuads
 
     protected override void SetTangents()
     {
+        Vector3 tangent3 = new Vector3(1,0,0);
+        Vector3 rotatedTangent = Quaternion.AngleAxis(angle, -Vector3.forward) * tangent3;
+        Vector4 tangent = rotatedTangent;
+        tangent.w = -1;
+        for (int i = 0; i < numVertices; i++)
+        {
+            tangents.Add(tangent);
+        }
     }
 
     protected override void SetUVs()
