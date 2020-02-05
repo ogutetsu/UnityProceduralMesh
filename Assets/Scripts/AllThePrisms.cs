@@ -117,6 +117,33 @@ public class AllThePrisms : AbstractMeshGenerator
 
     protected override void SetTangents()
     {
+        Vector4 frontTangent = new Vector4(1,0,0,-1);
+        for (int i = 0; i < numSides; i++)
+        {
+            tangents.Add(frontTangent);
+        }
+
+        for (int i = 0; i < numSides; i++)
+        {
+            int index = numSides + 4 * i;
+            Vector3 uDir = vertices[index] - vertices[index + 2];
+            Vector4 sideTangent = uDir.normalized;
+            sideTangent.w = 1;
+
+            for (int n = 0; n < 4; n++)
+            {
+                tangents.Add(sideTangent);
+            }
+
+        }
+
+        Vector4 backTangent = new Vector4(1, 0, 0, 1);
+        for (int i = 0; i < numSides; i++)
+        {
+            tangents.Add(backTangent);
+        }
+
+
     }
 
     protected override void SetUVs()
